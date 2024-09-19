@@ -26,4 +26,11 @@
 ## Project Summary
 
 RunTrack: A Running Data Monitoring App
-RunTrack is a web application designed to help users monitor and track their running data. The app allows users to input essential metrics like running time, speed, and pace, providing detailed insights into each session. Users can log their progress, analyze their performance, and set personalized fitness goals over time. Our project's key features include manual data entry, weather integration, and graphical analysis. Users can log in to manually enter data of their running details. Weater system provides users with valuable context to adjust their training plan according to different weather conditions. A well-designed graphical representation interface can help users to track their improvement through time, better helping them optimize their plans. This project also supports advanced features for serious athletes while remaining accessible to casual runners. The app will store data for both personal use and potential integration with public datasets.
+RunTrack is a web application designed to assist users in tracking and analyzing their running sessions. The app allows users to manually input essential metrics such as running time, speed, and pace, providing comprehensive insights into their performance. It caters to both casual runners and serious athletes by offering basic functionality and advanced features. 
+
+1. Manual Data Entry & Analysis: Users can log their distance, duration, pace, and speed, enabling a detailed review of each running session, helping them better achieve their training goal.
+2. API Integration: We plan to integrate APIs like weather data to provide context to performance metrics, helping users understand how environmental factors affect their run. They can also make adjustments based on weather condition.
+3. Predictive Analytics: Our app offers predictive performance analytics based on user history, sensor data, and historical marathon data. This provides users with personalized insights and training suggestions.
+4. Interactive Visualizations: Our app presents data through interactive charts, route heatmaps, and analyses with historical data, allowing users to explore and understand their performance patterns dynamically.
+
+For databases, we are planning to use Run or Walk Sensor Data and Berlin Marathon Historical Data.The first helps in building an activity recognition model for precise logging and the second offers benchmarking tools for users to compare their performance against professional runners. 
