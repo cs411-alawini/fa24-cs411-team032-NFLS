@@ -2,7 +2,7 @@
 
 # UML Diagram
 
-![Blank board (1).png](Stage%202%2011ad66d1dfe180678ed8dc66d8934081/Blank_board_(1).png)
+
 
 # Entities
 
