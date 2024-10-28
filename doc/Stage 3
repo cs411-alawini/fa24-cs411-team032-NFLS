@@ -1,0 +1,64 @@
+-- User Table
+CREATE TABLE User (
+    UserId INT PRIMARY KEY,
+    FirstName VARCHAR(100),
+    LastName VARCHAR(100),
+    Email VARCHAR(255),
+    PhoneNumber VARCHAR(20)
+);
+
+-- MakeFriends Table (Tracks friendships between users)
+CREATE TABLE MakeFriends (
+    FriendshipId INT PRIMARY KEY,
+    UserId INT,
+    FriendUserId INT,
+    StartDate DATE,
+    FriendshipLevel VARCHAR(50),
+    FOREIGN KEY (UserId) REFERENCES User(UserId),
+    FOREIGN KEY (FriendUserId) REFERENCES User(UserId)
+);
+
+-- Event Table
+CREATE TABLE Event (
+    EventID INT PRIMARY KEY,
+    Date DATE,
+    Location VARCHAR(255)
+);
+
+-- Host Table (Many-to-many relationship between Users and Events)
+CREATE TABLE Host (
+    UserId INT,
+    EventId INT,
+    FOREIGN KEY (UserId) REFERENCES User(UserId),
+    FOREIGN KEY (EventId) REFERENCES Event(EventID)
+);
+
+-- RunSessionData Table (Tracks running sessions for each user)
+CREATE TABLE RunSessionData (
+    RunSessionId INT PRIMARY KEY,
+    UserId INT,
+    SessionDistance FLOAT,
+    StartTime DATETIME,
+    EndTime DATETIME,
+    EventId INT,
+    FOREIGN KEY (UserId) REFERENCES User(UserId),
+    FOREIGN KEY (EventId) REFERENCES Event(EventID)
+);
+
+-- Purchase Table (Records purchases made by users)
+CREATE TABLE Purchase (
+    PurchaseId INT PRIMARY KEY,
+    PurchasePrice DECIMAL(10, 2),
+    Quantity INT,
+    UserId INT,
+    ProductId INT,
+    FOREIGN KEY (UserId) REFERENCES User(UserId),
+    FOREIGN KEY (ProductId) REFERENCES Product(ProductId)
+);
+
+-- Product Table
+CREATE TABLE Product (
+    ProductId INT PRIMARY KEY,
+    ProductName VARCHAR(255),
+    ProductPrice DECIMAL(10, 2)
+);
