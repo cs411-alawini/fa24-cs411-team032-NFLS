@@ -2,7 +2,7 @@
 
 # UML Diagram
 
-![UML Diagram](./UML%20diagram.png)
+![UML Diagram](./UML%20Diagram%20Revised.png)
 
 # Entities
 
@@ -20,7 +20,7 @@
 - **User - User (Make Friends)**: Many-to-many relationship with itself. Users can have multiple friends, and each friend is also a user.
 - **User - Purchase (Shopping)**: One-to-many relationship. A user can make multiple purchases, but each purchase is associated with only one user.
 - **User - Event (Host)**: Many-to-many relationship. Users can host multiple events, and an event can be hosted by multiple users.
-- **User - RunSessionData (UserRunningData)**: One-to-one relationship. Each user can have one associated running session data entry that tracks their running activities.
+- **User - RunSessionData (UserRunningData)**: One-to-many relationship. Each user can have one associated running session data entry that tracks their running activities.
 - **Product - Purchase (ProductId)**: Many-to-one relationship. Each purchase can be associated with only one product, but each product can appear in multiple purchases.
 - **Event - RunSessionData (Event)**: Many-to-one relationship. Each running session is associated with a single event, but an event can encompass multiple running sessions.
 
