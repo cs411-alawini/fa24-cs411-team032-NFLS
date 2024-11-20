@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface PurchaseRepository extends JpaRepository<Purchase, String> {
-    List<Purchase> findByUserId(String userId); // 根据用户ID查询购买记录
+    List<Purchase> findByUserId(String userId);
 
-    List<Purchase> findByProductId(String productId); // 根据产品ID查询购买记录
+    List<Purchase> findByProductId(String productId);
 }

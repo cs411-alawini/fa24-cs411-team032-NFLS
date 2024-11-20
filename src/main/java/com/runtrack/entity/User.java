@@ -3,6 +3,9 @@ package com.runtrack.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "User")
 @Data
@@ -23,4 +26,23 @@ public class User {
 
     @Column(name = "PhoneNumber")
     private String phoneNumber;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Host",
+            joinColumns = @JoinColumn(name = "UserId"),
+            inverseJoinColumns = @JoinColumn(name = "EventId")
+    )
+    private Set<Event> hostedEvents = new HashSet<>();
+
+    public void addHostedEvent(Event event) {
+        this.hostedEvents.add(event);
+        event.getHosts().add(this);
+    }
+
+    public void removeHostedEvent(Event event) {
+        this.hostedEvents.remove(event);
+        event.getHosts().remove(this);
+    }
+
 }

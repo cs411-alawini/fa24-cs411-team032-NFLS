@@ -1,11 +1,13 @@
 package com.runtrack.controller;
 
 import com.runtrack.entity.Event;
+import com.runtrack.entity.User;
 import com.runtrack.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/events")
@@ -45,5 +47,20 @@ public class EventController {
     @DeleteMapping("/{eventId}")
     public void deleteEvent(@PathVariable String eventId) {
         eventService.deleteEventById(eventId);
+    }
+
+    @GetMapping("/{eventId}/users")
+    public Set<User> getEventUsers(@PathVariable String eventId) {
+        return eventService.getEventUsers(eventId); // 查询事件关联的用户
+    }
+
+    @PostMapping("/{eventId}/users/{userId}")
+    public Event addHostToEvent(@PathVariable String eventId, @PathVariable String userId) {
+        return eventService.addHostToEvent(eventId, userId);
+    }
+
+    @DeleteMapping("/{eventId}/users/{userId}")
+    public Event removeHostFromEvent(@PathVariable String eventId, @PathVariable String userId) {
+        return eventService.removeHostFromEvent(eventId, userId);
     }
 }

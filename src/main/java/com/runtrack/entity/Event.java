@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Event")
@@ -18,4 +20,17 @@ public class Event {
 
     @Column(name = "Location")
     private String location;
+
+    @ManyToMany(mappedBy = "hostedEvents")
+    private Set<User> hosts = new HashSet<>();
+
+    public void addHost(User user) {
+        this.hosts.add(user);
+        user.getHostedEvents().add(this);
+    }
+
+    public void removeHost(User user) {
+        this.hosts.remove(user);
+        user.getHostedEvents().remove(this);
+    }
 }
