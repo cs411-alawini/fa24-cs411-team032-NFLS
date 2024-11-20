@@ -1,5 +1,6 @@
 package com.runtrack.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,6 +27,10 @@ public class User {
 
     @Column(name = "PhoneNumber")
     private String phoneNumber;
+
+    @JsonIgnore
+    @Column(name = "Password", nullable = false)
+    private String password;
 
     @ManyToMany
     @JoinTable(

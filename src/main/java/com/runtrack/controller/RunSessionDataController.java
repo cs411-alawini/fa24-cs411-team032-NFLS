@@ -4,8 +4,10 @@ import com.runtrack.entity.RunSessionData;
 import com.runtrack.service.RunSessionDataService;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/run-sessions")
@@ -35,6 +37,17 @@ public class RunSessionDataController {
         LocalDateTime startTime = LocalDateTime.parse(start);
         LocalDateTime endTime = LocalDateTime.parse(end);
         return runSessionDataService.getRunSessionsByUserIdAndTimeRange(userId, startTime, endTime);
+    }
+
+    @GetMapping("/user/{userId}/all-stats")
+    public Map<String, Object> getAllStats(@PathVariable String userId) {
+        return runSessionDataService.getAllStats(userId);
+    }
+
+
+    @GetMapping("/user/{userId}/daily-distances")
+    public Map<LocalDate, Double> getDailyDistances(@PathVariable String userId) {
+        return runSessionDataService.getDailyDistances(userId);
     }
 
     @PostMapping
