@@ -49,10 +49,16 @@ public class EventController {
         eventService.deleteEventById(eventId);
     }
 
-    @GetMapping("/{eventId}/users")
-    public Set<User> getEventUsers(@PathVariable String eventId) {
-        return eventService.getEventUsers(eventId); // 查询事件关联的用户
+    // @GetMapping("/{eventId}/users")
+    // public Set<User> getEventUsers(@PathVariable String eventId) {
+    //     return eventService.getEventUsers(eventId); // 查询事件关联的用户
+    // }
+
+    @GetMapping("/location")
+    public List<Event> getEventsByLocation(@RequestParam String location) {
+        return eventService.getEventsByLocation(location);
     }
+
 
     @PostMapping("/{eventId}/users/{userId}")
     public Event addHostToEvent(@PathVariable String eventId, @PathVariable String userId) {
