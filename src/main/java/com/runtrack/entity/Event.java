@@ -1,5 +1,6 @@
 package com.runtrack.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,16 +13,17 @@ import java.util.Set;
 @Data
 public class Event {
     @Id
-    @Column(name = "EventID", nullable = false)
+    @Column(name = "EventID", nullable = false, unique = true)
     private String eventId;
 
-    @Column(name = "Date")
+    @Column(name = "City", nullable = false)
+    private String city;
+
+    @Column(name = "Date", nullable = false)
     private LocalDate date;
 
-    @Column(name = "Location")
-    private String location;
-
-    @ManyToMany(mappedBy = "hostedEvents")
+    @ManyToMany(mappedBy = "hostedEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference // Break cyclic reference here
     private Set<User> hosts = new HashSet<>();
 
     public void addHost(User user) {

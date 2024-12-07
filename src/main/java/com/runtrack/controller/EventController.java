@@ -3,15 +3,21 @@ package com.runtrack.controller;
 import com.runtrack.entity.Event;
 import com.runtrack.entity.User;
 import com.runtrack.service.EventService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/events")
 public class EventController {
+    private static final Logger logger = LoggerFactory.getLogger(EventController.class);
 
     private final EventService eventService;
 
@@ -21,7 +27,23 @@ public class EventController {
 
     @GetMapping
     public List<Event> getAllEvents() {
+        logger.info("Fetching all events");
         return eventService.getAllEvents();
+    }
+
+    @PostMapping
+    public Event createEvent(@RequestBody Map<String, String> payload) {
+        logger.info("Received payload: {}", payload);
+
+        String city = payload.get("city");
+        String date = payload.get("date");
+        String userId = payload.get("userId");
+
+        if (city == null || date == null || userId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "City, date, and userId are required.");
+        }
+
+        return eventService.createEvent(city, date, userId);
     }
 
     @GetMapping("/{eventId}")
@@ -34,14 +56,9 @@ public class EventController {
         return eventService.getEventsByDate(date);
     }
 
-    @GetMapping("/location")
-    public List<Event> getEventsByLocation(@RequestParam String location) {
-        return eventService.getEventsByLocation(location);
-    }
-
-    @PostMapping
-    public Event createEvent(@RequestBody Event event) {
-        return eventService.saveEvent(event);
+    @GetMapping("/city")
+    public List<Event> getEventsByCity(@RequestParam String city) {
+        return eventService.getEventsByCity(city);
     }
 
     @DeleteMapping("/{eventId}")
@@ -49,24 +66,8 @@ public class EventController {
         eventService.deleteEventById(eventId);
     }
 
-    // @GetMapping("/{eventId}/users")
-    // public Set<User> getEventUsers(@PathVariable String eventId) {
-    //     return eventService.getEventUsers(eventId); // 查询事件关联的用户
-    // }
-
-    @GetMapping("/location")
-    public List<Event> getEventsByLocation(@RequestParam String location) {
-        return eventService.getEventsByLocation(location);
-    }
-
-
-    @PostMapping("/{eventId}/users/{userId}")
-    public Event addHostToEvent(@PathVariable String eventId, @PathVariable String userId) {
-        return eventService.addHostToEvent(eventId, userId);
-    }
-
-    @DeleteMapping("/{eventId}/users/{userId}")
-    public Event removeHostFromEvent(@PathVariable String eventId, @PathVariable String userId) {
-        return eventService.removeHostFromEvent(eventId, userId);
+    @GetMapping("/{eventId}/users")
+    public Set<User> getEventUsers(@PathVariable String eventId) {
+        return eventService.getEventUsers(eventId);
     }
 }
