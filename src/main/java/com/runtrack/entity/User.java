@@ -11,8 +11,9 @@ import java.util.Set;
 @Entity
 @Table(name = "User")
 @Data
-@EqualsAndHashCode(exclude = "hostedEvents")
+@EqualsAndHashCode(exclude = "hostedEvents") // 排除 hostedEvents 防止循环依赖
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "UserId")
@@ -39,7 +40,7 @@ public class User {
             joinColumns = @JoinColumn(name = "UserId"),
             inverseJoinColumns = @JoinColumn(name = "EventId")
     )
-    @JsonBackReference // Break cyclic reference here
+    @JsonBackReference // 防止循环引用
     private Set<Event> hostedEvents = new HashSet<>();
 
     public void addHostedEvent(Event event) {
@@ -47,7 +48,7 @@ public class User {
         event.getHosts().add(this);
     }
 
-    public void removeHostedEvent(Event event) {
+=    public void removeHostedEvent(Event event) {
         this.hostedEvents.remove(event);
         event.getHosts().remove(this);
     }
