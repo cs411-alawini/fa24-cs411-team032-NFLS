@@ -26,7 +26,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000"); // 显式允许的 Origin
+        configuration.addAllowedOriginPattern("http://localhost:*"); // all allow frontend end point
         configuration.addAllowedMethod("*"); // 允许所有 HTTP 方法
         configuration.addAllowedHeader("*"); // 允许所有请求头
         configuration.setAllowCredentials(true); // 允许携带凭据
