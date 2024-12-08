@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, String> {
-    List<Event> findByDate(LocalDate date); // 根据日期查询事件
+    List<Event> findByDate(LocalDate date); // Query events by date
 
-    List<Event> findByLocation(String location); // 根据地点查询事件
+    List<Event> findByCity(String city); // Query events by city
 }

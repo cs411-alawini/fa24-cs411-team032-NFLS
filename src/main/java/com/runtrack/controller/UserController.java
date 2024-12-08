@@ -1,10 +1,11 @@
 package com.runtrack.controller;
 
+import com.runtrack.entity.Event;
 import com.runtrack.entity.User;
 import com.runtrack.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Set;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -51,5 +52,20 @@ public class UserController {
                     return ResponseEntity.ok(user);
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{userId}/events")
+    public Set<Event> getUserEvents(@PathVariable String userId) {
+        return userService.getUserEvents(userId); // 查询用户参加的事件
+    }
+
+    @PostMapping("/{userId}/events/{eventId}")
+    public User addEventToUser(@PathVariable String userId, @PathVariable String eventId) {
+        return userService.addEventToUser(userId, eventId);
+    }
+
+    @DeleteMapping("/{userId}/events/{eventId}")
+    public User removeEventFromUser(@PathVariable String userId, @PathVariable String eventId) {
+        return userService.removeEventFromUser(userId, eventId);
     }
 }
