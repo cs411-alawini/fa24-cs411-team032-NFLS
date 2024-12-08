@@ -3,6 +3,7 @@ package com.runtrack.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "Event")
 @Data
+@EqualsAndHashCode(exclude = "hosts")
 public class Event {
     @Id
     @Column(name = "EventID", nullable = false, unique = true)

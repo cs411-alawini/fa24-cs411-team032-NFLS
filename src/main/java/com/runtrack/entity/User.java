@@ -3,6 +3,7 @@ package com.runtrack.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "User")
 @Data
+@EqualsAndHashCode(exclude = "hostedEvents")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
