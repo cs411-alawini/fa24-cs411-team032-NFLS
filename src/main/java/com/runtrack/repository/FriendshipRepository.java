@@ -1,3 +1,5 @@
+package com.runtrack.repository;
+
 import com.runtrack.entity.Friendship;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -9,12 +11,7 @@ import java.util.UUID;
 @Repository
 public interface FriendshipRepository extends CrudRepository<Friendship, UUID> {
 
-    @Query("SELECT * FROM MakeFriends WHERE UserId = :userId")
-    List<Friendship> findByUserId(UUID userId);
-
-    @Query("SELECT * FROM MakeFriends WHERE FriendUserId = :friendUserId")
-    List<Friendship> findByFriendUserId(UUID friendUserId);
-
+    // 根据用户 ID 查找所有好友关系
     @Query("SELECT * FROM MakeFriends WHERE UserId = :userId OR FriendUserId = :userId")
     List<Friendship> findAllFriendshipsByUserId(UUID userId);
 }
