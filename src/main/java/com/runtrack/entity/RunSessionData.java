@@ -1,43 +1,29 @@
-//package com.runtrack.entity;
-//
-//import jakarta.persistence.*;
-//import lombok.Data;
-//
-//import java.time.LocalDateTime;
-//
-//@Entity
-//@Table(name = "RunSessionData")
-//@Data
-//public class RunSessionData {
-//    @Id
-//    private String runSessionId;
-//
-//    @Column(name = "UserId")
-//    private String userId;
-//
-//    @Column(name = "SessionDistance")
-//    private Float sessionDistance;
-//
-//    @Column(name = "StartTime")
-//    private LocalDateTime startTime;
-//
-//    @Column(name = "EndTime")
-//    private LocalDateTime endTime;
-//
-//    @Column(name = "EventId")
-//    private String eventId;
-//}
-
 package com.runtrack.entity;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
+@Table("RunSessionData")
 public class RunSessionData {
+    @Id
     private String runSessionId;
+
+    @Column("UserId")
     private String userId;
+
+    @Column("SessionDistance")
     private Float sessionDistance;
+
+    @Column("StartTime")
     private LocalDateTime startTime;
+
+    @Column("EndTime")
     private LocalDateTime endTime;
+
+    @Column("EventId")
     private String eventId;
 
     // Getters and Setters
