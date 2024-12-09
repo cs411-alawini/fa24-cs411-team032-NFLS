@@ -4,6 +4,7 @@ import com.runtrack.entity.Purchase;
 import com.runtrack.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,7 +16,10 @@ public class PurchaseService {
     }
 
     public List<Purchase> getAllPurchases() {
-        return purchaseRepository.findAll();
+        Iterable<Purchase> iterable = purchaseRepository.findAll();
+        List<Purchase> purchaseList = new ArrayList<>();
+        iterable.forEach(purchaseList::add);
+        return purchaseList;
     }
 
     public List<Purchase> getPurchasesByUserId(String userId) {
