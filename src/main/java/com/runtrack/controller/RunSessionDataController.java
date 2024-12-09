@@ -9,21 +9,21 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/runsessions")
-public class RunSessionController {
+public class RunSessionDataController { 
 
     private final RunSessionDataService runSessionDataService;
 
-    public RunSessionController(RunSessionDataService runSessionDataService) {
+    public RunSessionDataController(RunSessionDataService runSessionDataService) {
         this.runSessionDataService = runSessionDataService;
     }
 
     @GetMapping("/user/{userId}")
-    public List<RunSessionData> getRunSessionsByUserId(@PathVariable String userId) {
+    public List<RunSessionData> getRunSessionsByUserId(@PathVariable("userId") String userId) { // Explicit mapping for clarity
         return runSessionDataService.getRunSessionsByUserId(userId);
     }
 
     @GetMapping("/stats/{userId}")
-    public Map<String, Object> getAllStats(@PathVariable String userId) {
+    public Map<String, Object> getAllStats(@PathVariable("userId") String userId) { // Explicit mapping for clarity
         return runSessionDataService.getAllStats(userId);
     }
 
