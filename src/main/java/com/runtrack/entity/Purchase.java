@@ -1,43 +1,30 @@
-//package com.runtrack.entity;
-//
-//import jakarta.persistence.*;
-//import lombok.Data;
-//
-//import java.math.BigDecimal;
-//
-//@Entity
-//@Table(name = "Purchase")
-//@Data
-//public class Purchase {
-//    @Id
-//    @Column(name = "PurchaseId", nullable = false)
-//    private String purchaseId;
-//
-//    @Column(name = "PurchasePrice", precision = 10, scale = 2)
-//    private BigDecimal purchasePrice;
-//
-//    @Column(name = "Quantity")
-//    private Integer quantity;
-//
-//    @Column(name = "UserId")
-//    private String userId;
-//
-//    @Column(name = "ProductId")
-//    private String productId;
-//}
-
 package com.runtrack.entity;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 
+@Table("Purchase")
 public class Purchase {
+
+    @Id
+    @Column("PurchaseId")
     private String purchaseId;
+
+    @Column("PurchasePrice")
     private BigDecimal purchasePrice;
+
+    @Column("Quantity")
     private Integer quantity;
+
+    @Column("UserId")
     private String userId;
+
+    @Column("ProductId")
     private String productId;
 
-    // Getters and Setters
     public String getPurchaseId() {
         return purchaseId;
     }
