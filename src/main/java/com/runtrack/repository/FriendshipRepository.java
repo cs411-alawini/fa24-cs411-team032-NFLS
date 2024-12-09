@@ -1,17 +1,20 @@
-package com.runtrack.repository;
-
 import com.runtrack.entity.Friendship;
-import com.runtrack.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface FriendshipRepository extends JpaRepository<Friendship, String> {
-    @Query("SELECT f FROM Friendship f WHERE f.userId = :userId OR f.friendUserId = :userId")
-    List<Friendship> findAllFriendshipsByUserId(@Param("userId") String userId);
+public interface FriendshipRepository extends CrudRepository<Friendship, UUID> {
 
+    @Query("SELECT * FROM MakeFriends WHERE UserId = :userId")
+    List<Friendship> findByUserId(UUID userId);
+
+    @Query("SELECT * FROM MakeFriends WHERE FriendUserId = :friendUserId")
+    List<Friendship> findByFriendUserId(UUID friendUserId);
+
+    @Query("SELECT * FROM MakeFriends WHERE UserId = :userId OR FriendUserId = :userId")
+    List<Friendship> findAllFriendshipsByUserId(UUID userId);
 }

@@ -28,24 +28,20 @@ public class UserService {
         this.hostRepository = hostRepository;
     }
 
-    // 用户注册
     public User registerUser(User user) {
         user.setUserId(UUID.randomUUID());
         return userRepository.save(user);
     }
 
-    // 用户登录
     public Optional<User> loginUser(String email, String password) {
         return userRepository.findById(UUID.fromString(email))
                 .filter(user -> user.getPassword().equals(password));
     }
 
-    // 根据 ID 查找用户
     public Optional<User> findById(UUID userId) {
         return userRepository.findById(userId);
     }
 
-    // 更新用户信息
     public User updateUser(UUID userId, User updatedUser) {
         return userRepository.findById(userId).map(user -> {
             user.setFirstName(updatedUser.getFirstName());
@@ -85,7 +81,6 @@ public class UserService {
         hostRepository.save(host);
     }
 
-    // 移除用户的事件
     @Transactional
     public void removeEventFromUser(UUID userId, UUID eventId) {
         hostRepository.findByUserId(userId).stream()
