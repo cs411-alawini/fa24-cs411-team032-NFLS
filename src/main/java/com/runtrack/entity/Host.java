@@ -10,27 +10,21 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@Table("User")
-public class User {
+@Table("Host")
+public class Host {
 
     @Id
+    private UUID id;
+
     @Column("UserId")
     private UUID userId;
 
-    @Column("FirstName")
-    private String firstName;
+    @Column("EventId")
+    private UUID eventId;
 
-    @Column("LastName")
-    private String lastName;
-
-    @Column("Email")
-    private String email;
-
-    @Column("PhoneNumber")
-    private String phoneNumber;
-
-    @Column("Password")
-    private String password;
+    public Host(UUID id, UUID userId, UUID eventId) {
+        this.id = id;
+        this.userId = userId;
+        this.eventId = eventId;
+    }
 }
-
-

@@ -5,7 +5,11 @@ import com.runtrack.entity.User;
 import com.runtrack.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Set;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -16,56 +20,77 @@ public class UserController {
         this.userService = userService;
     }
 
+    // 用户注册
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<User> registerUser(@RequestBody User user) {
         User registeredUser = userService.registerUser(user);
         return ResponseEntity.ok(registeredUser);
     }
 
+    // 用户登录
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam String firstName,
-                                       @RequestParam String lastName,
-                                       @RequestParam String password) {
-        return userService.loginUser(firstName, lastName, password)
-                .map(user -> ResponseEntity.ok("Login successful"))
+    public ResponseEntity<String> loginUser(@RequestParam String email,
+                                            @RequestParam String password) {
+        Optional<User> user = userService.loginUser(email, password);
+        return user.map(u -> ResponseEntity.ok("Login successful"))
                 .orElse(ResponseEntity.status(401).body("Invalid credentials"));
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.findById(id)
+
+    // 根据 ID 查找用户
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
+        return userService.findById(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(
-            @PathVariable Long id,
-            @RequestBody User updatedUser) {
-        return userService.findById(id)
-                .map(user -> {
-                    user.setFirstName(updatedUser.getFirstName());
-                    user.setLastName(updatedUser.getLastName());
-                    user.setEmail(updatedUser.getEmail());
-                    user.setPhoneNumber(updatedUser.getPhoneNumber());
-                    user.setPassword(updatedUser.getPassword());
-                    userService.save(user);
-                    return ResponseEntity.ok(user);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    // 更新用户信息
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable UUID userId,
+                                           @RequestBody User updatedUser) {
+        try {
+            User user = userService.updateUser(userId, updatedUser);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
+    // 删除用户
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 获取用户参加的所有事件
     @GetMapping("/{userId}/events")
-    public Set<Event> getUserEvents(@PathVariable String userId) {
-        return userService.getUserEvents(userId); // 查询用户参加的事件
+    public ResponseEntity<List<Event>> getUserEvents(@PathVariable UUID userId) {
+        List<Event> events = userService.getUserEvents(userId);
+        return ResponseEntity.ok(events);
     }
 
+    // 给用户添加事件
     @PostMapping("/{userId}/events/{eventId}")
-    public User addEventToUser(@PathVariable String userId, @PathVariable String eventId) {
-        return userService.addEventToUser(userId, eventId);
+    public ResponseEntity<String> addEventToUser(@PathVariable UUID userId,
+                                                 @PathVariable UUID eventId) {
+        try {
+            userService.addEventToUser(userId, eventId);
+            return ResponseEntity.ok("Event added to user successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
+    // 移除用户的事件
     @DeleteMapping("/{userId}/events/{eventId}")
-    public User removeEventFromUser(@PathVariable String userId, @PathVariable String eventId) {
-        return userService.removeEventFromUser(userId, eventId);
+    public ResponseEntity<String> removeEventFromUser(@PathVariable UUID userId,
+                                                      @PathVariable UUID eventId) {
+        try {
+            userService.removeEventFromUser(userId, eventId);
+            return ResponseEntity.ok("Event removed from user successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
