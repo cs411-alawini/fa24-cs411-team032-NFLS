@@ -11,6 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.CallableStatementCreator;
+import org.springframework.stereotype.Service;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Date;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -105,5 +116,32 @@ public class EventService {
                 .map(host -> userRepository.findById(host.getUserId())
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")))
                 .collect(Collectors.toList());
+    }
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    /**
+     * Calls the InsertEventAndHost stored procedure to insert a new event and host.
+     *
+     * @param eventId    UUID of the event
+     * @param eventDate  Date of the event
+     * @param location   Location of the event
+     * @param userId     UUID of the user hosting the event
+     * @throws SQLException if a database access error occurs
+     */
+    public void insertEventAndHost(String eventId, String eventDate, String location, String userId) throws SQLException {
+        String callProcedure = "{CALL InsertEventAndHost(?, ?, ?, ?)}";
+
+        jdbcTemplate.execute((Connection connection) -> {
+            try (CallableStatement callableStatement = connection.prepareCall(callProcedure)) {
+                callableStatement.setString(1, eventId);
+                callableStatement.setDate(2, Date.valueOf(eventDate));
+                callableStatement.setString(3, location);
+                callableStatement.setString(4, userId);
+                callableStatement.execute();
+            }
+            return null;
+        });
     }
 }
