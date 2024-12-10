@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Product {
 
     @Id
+    @Column("ProductId")
     private String productId;
 
     @Column("ProductName")
