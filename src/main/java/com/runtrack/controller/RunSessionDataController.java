@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/run-sessions")
@@ -35,6 +36,12 @@ public class RunSessionDataController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
         return service.getRunSessionsByUserIdAndTimeRange(userId, start, end);
+    }
+
+    @GetMapping("/user/{userId}/all-stats")
+    public ResponseEntity<Map<String, Object>> getUserStats(@PathVariable String userId) {
+        Map<String, Object> stats = service.getUserStats(userId);
+        return ResponseEntity.ok(stats);
     }
 
     @PutMapping("/{runSessionId}/stop")
