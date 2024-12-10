@@ -30,8 +30,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginUser(@RequestParam String email,
-                                                         @RequestParam String password) {
+    public ResponseEntity<Map<String, String>> loginUser(
+            @RequestParam String email,
+            @RequestParam String password) {
         Optional<User> user = userService.loginUser(email, password);
         return user.map(u -> ResponseEntity.ok(Map.of(
                 "message", "Login successful",
@@ -40,6 +41,7 @@ public class UserController {
                 "message", "Invalid credentials"
         )));
     }
+
 
 
 
