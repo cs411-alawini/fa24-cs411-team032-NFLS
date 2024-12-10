@@ -12,11 +12,13 @@ import java.util.UUID;
 @Repository
 public interface EventRepository extends CrudRepository<Event, UUID> {
 
-    // 手动编写 SQL 查询来根据城市查找事件
-    @Query("SELECT * FROM Event WHERE City = :city")
-    List<Event> findByCity(String city);
+    // Case-insensitive search for events by location
+    @Query("SELECT * FROM Event WHERE LOWER(Location) = LOWER(:location)")
+    List<Event> findByLocationIgnoreCase(String location);
 
-    // 手动编写 SQL 查询来根据日期查找事件
+    // Existing query remains unchanged
     @Query("SELECT * FROM Event WHERE Date = :date")
     List<Event> findByDate(LocalDate date);
 }
+
+
