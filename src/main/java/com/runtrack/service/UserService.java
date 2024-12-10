@@ -7,8 +7,10 @@ import com.runtrack.repository.UserRepository;
 import com.runtrack.repository.EventRepository;
 import com.runtrack.repository.HostRepository;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,16 +54,15 @@ public class UserService {
 
     // 更新用户信息
     public User updateUser(String userId, User updatedUser) {
-        return userRepository.findById(userId).map(user -> {
-            user.setFirstName(updatedUser.getFirstName());
-            user.setLastName(updatedUser.getLastName());
-            user.setEmail(updatedUser.getEmail());
-            user.setPhoneNumber(updatedUser.getPhoneNumber());
-            user.setPassword(updatedUser.getPassword());
-            userRepository.save(user);
-            return user;
-        }).orElseThrow(() -> new RuntimeException("User not found"));
+        updatedUser.setUserId(userId);
+        int rowsAffected = userRepository.update(updatedUser);
+
+        if (rowsAffected == 0) {
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+        return updatedUser;
     }
+
 
     // 删除用户
     public void deleteUser(String userId) {

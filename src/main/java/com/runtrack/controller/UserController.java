@@ -46,6 +46,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable String userId) {
+        System.out.println("Fetching user with ID: " + userId);
         return userService.findById(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -62,6 +63,7 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable String userId,
                                            @RequestBody User updatedUser) {
         try {
+            System.out.println("Updating user with ID: " + userId);
             User user = userService.updateUser(userId, updatedUser);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {

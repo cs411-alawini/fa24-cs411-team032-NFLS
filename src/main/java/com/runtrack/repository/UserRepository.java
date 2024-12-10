@@ -29,6 +29,18 @@ public class UserRepository {
                 user.getPassword());
     }
 
+    public int update(User user) {
+        String sql = "UPDATE User SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, Password = ? WHERE UserId = ?";
+        return jdbcTemplate.update(sql,
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getPassword(),
+                user.getUserId());
+    }
+
+
     // 根据 ID 查找用户
     public Optional<User> findById(String userId) {
         String sql = "SELECT * FROM User WHERE UserId = ?";
