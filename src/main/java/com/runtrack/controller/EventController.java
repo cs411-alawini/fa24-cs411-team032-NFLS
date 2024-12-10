@@ -66,10 +66,10 @@ public class EventController {
 //        }
 //    }
 //
-//    @GetMapping("/city")
-//    public ResponseEntity<List<Event>> getEventsByCity(@RequestParam String city) {
-//        return ResponseEntity.ok(eventService.getEventsByCity(city));
-//    }
+    @GetMapping("/city")
+    public ResponseEntity<List<Event>> getEventsByCity(@RequestParam String city) {
+        return ResponseEntity.ok(eventService.getEventsByCity(city));
+    }
 
     // 删除事件
     @DeleteMapping("/{eventId}")

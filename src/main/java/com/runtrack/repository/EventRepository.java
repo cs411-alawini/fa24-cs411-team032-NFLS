@@ -65,6 +65,12 @@ public class EventRepository {
         return count != null && count > 0;
     }
 
+    public List<Event> findByCity(String city) {
+        String sql = "SELECT * FROM Event WHERE City = ?";
+        return jdbcTemplate.query(sql, this::mapRowToEvent, city);
+    }
+
+
     // 辅助方法：将 ResultSet 映射为 Event 对象
     private Event mapRowToEvent(ResultSet rs, int rowNum) throws SQLException {
         Event event = new Event();

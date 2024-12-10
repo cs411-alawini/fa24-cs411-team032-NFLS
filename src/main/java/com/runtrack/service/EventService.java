@@ -59,6 +59,11 @@ public class EventService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
     }
 
+    public List<Event> getEventsByCity(String city) {
+        return eventRepository.findByCity(city);
+    }
+
+
     public void deleteEventById(String eventId) {
         if (!eventRepository.existsById(eventId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
