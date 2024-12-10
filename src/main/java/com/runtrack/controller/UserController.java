@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -27,18 +29,33 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestParam String email,
-                                            @RequestParam String password) {
+    public ResponseEntity<?> loginUser(@RequestParam String email,
+                                       @RequestParam String password) {
         Optional<User> user = userService.loginUser(email, password);
-        return user.map(u -> ResponseEntity.ok("Login successful"))
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"));
+
+        if (user.isPresent()) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("userId", user.get().getUserId());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid credentials"));
+        }
     }
+
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable String userId) {
         return userService.findById(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile(@RequestParam String email) {
+        Optional<User> user = userService.findByEmail(email);
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PutMapping("/{userId}")

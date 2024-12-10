@@ -1,30 +1,33 @@
 package com.runtrack.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-
-import java.util.UUID;
-
-@Data
-@NoArgsConstructor
-@Table("Host")
 public class Host {
 
-    @Id
-    private String id;
-
-    @Column("UserId")
     private String userId;
-
-    @Column("EventId")
     private String eventId;
 
-    public Host(String id, String userId, String eventId) {
-        this.id = id;
+    // 默认构造函数
+    public Host() {}
+
+    // 带参数的构造函数
+    public Host(String userId, String eventId) {
         this.userId = userId;
+        this.eventId = eventId;
+    }
+
+    // Getters 和 Setters
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 }

@@ -1,30 +1,24 @@
 package com.runtrack.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-
 import java.math.BigDecimal;
 
-@Table("Purchase")
 public class Purchase {
-
-    @Id
-    @Column("PurchaseId")
     private String purchaseId;
-
-    @Column("PurchasePrice")
     private BigDecimal purchasePrice;
-
-    @Column("Quantity")
-    private Integer quantity;
-
-    @Column("UserId")
+    private int quantity;
     private String userId;
-
-    @Column("ProductId")
     private String productId;
 
+    // 全参数构造函数
+    public Purchase(String purchaseId, BigDecimal purchasePrice, int quantity, String userId, String productId) {
+        this.purchaseId = purchaseId;
+        this.purchasePrice = purchasePrice;
+        this.quantity = quantity;
+        this.userId = userId;
+        this.productId = productId;
+    }
+
+    // Getters and Setters
     public String getPurchaseId() {
         return purchaseId;
     }
@@ -41,11 +35,11 @@ public class Purchase {
         this.purchasePrice = purchasePrice;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
@@ -65,3 +59,4 @@ public class Purchase {
         this.productId = productId;
     }
 }
+

@@ -1,30 +1,24 @@
 package com.runtrack.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-
 import java.time.LocalDateTime;
 
-@Table("RunSessionData")
 public class RunSessionData {
-    @Id
     private String runSessionId;
-
-    @Column("UserId")
     private String userId;
-
-    @Column("SessionDistance")
     private Float sessionDistance;
-
-    @Column("StartTime")
     private LocalDateTime startTime;
-
-    @Column("EndTime")
     private LocalDateTime endTime;
-
-    @Column("EventId")
     private String eventId;
+
+    // 全参数构造函数
+    public RunSessionData(String runSessionId, String userId, Float sessionDistance, LocalDateTime startTime, LocalDateTime endTime, String eventId) {
+        this.runSessionId = runSessionId;
+        this.userId = userId;
+        this.sessionDistance = sessionDistance;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.eventId = eventId;
+    }
 
     // Getters and Setters
     public String getRunSessionId() {

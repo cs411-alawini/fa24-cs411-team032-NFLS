@@ -27,12 +27,12 @@ public class FriendshipController {
         return friendshipService.getAllFriends(userId);
     }
 
-    @PostMapping
-    public Friendship createFriendship(
-            @RequestParam String userId,
-            @RequestParam String friendUserId,
-            @RequestParam LocalDate startDate,
-            @RequestParam String friendshipLevel) {
-        return friendshipService.createFriendship(userId, friendUserId, startDate, friendshipLevel);
-    }
+//    @PostMapping
+//    public Friendship createFriendship(
+//            @RequestParam String userId,
+//            @RequestParam String friendUserId,
+//            @RequestParam LocalDate startDate,
+//            @RequestParam String friendshipLevel) {
+//        return friendshipService.createFriendship(userId, friendUserId, startDate, friendshipLevel);
+//    }
 }

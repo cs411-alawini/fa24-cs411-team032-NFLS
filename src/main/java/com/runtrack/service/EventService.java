@@ -33,7 +33,7 @@ public class EventService {
     public Event createEvent(String city, String date, String userId) {
         String eventId = UUID.randomUUID().toString();
         Event event = new Event();
-        event.setEventId(null);
+        event.setEventId(eventId);
         event.setCity(city);
 
         try {
@@ -44,7 +44,7 @@ public class EventService {
 
         eventRepository.save(event);
 
-        Host host = new Host(UUID.randomUUID().toString(), userId, eventId);
+        Host host = new Host(userId, eventId);
         hostRepository.save(host);
 
         return event;

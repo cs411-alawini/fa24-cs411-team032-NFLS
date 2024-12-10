@@ -28,20 +28,29 @@ public class UserService {
         this.hostRepository = hostRepository;
     }
 
+    // 注册用户
     public User registerUser(User user) {
         user.setUserId(UUID.randomUUID().toString()); // 生成 String 类型的 UUID
-        return userRepository.save(user);
+        userRepository.save(user);
+        return user;
     }
 
+    // 用户登录
     public Optional<User> loginUser(String email, String password) {
         return userRepository.findByEmail(email)
                 .filter(user -> user.getPassword() != null && user.getPassword().equals(password));
     }
 
+    // 根据 ID 查找用户
     public Optional<User> findById(String userId) {
         return userRepository.findById(userId);
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    // 更新用户信息
     public User updateUser(String userId, User updatedUser) {
         return userRepository.findById(userId).map(user -> {
             user.setFirstName(updatedUser.getFirstName());
@@ -49,14 +58,17 @@ public class UserService {
             user.setEmail(updatedUser.getEmail());
             user.setPhoneNumber(updatedUser.getPhoneNumber());
             user.setPassword(updatedUser.getPassword());
-            return userRepository.save(user);
+            userRepository.save(user);
+            return user;
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // 删除用户
     public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
 
+    // 获取用户的所有事件
     public List<Event> getUserEvents(String userId) {
         return hostRepository.findByUserId(userId).stream()
                 .map(host -> eventRepository.findById(host.getEventId()).orElse(null))
@@ -64,6 +76,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    // 为用户添加事件
     @Transactional
     public void addEventToUser(String userId, String eventId) {
         if (!userRepository.existsById(userId)) {
@@ -74,15 +87,17 @@ public class UserService {
             throw new IllegalArgumentException("Event not found");
         }
 
-        Host host = new Host(UUID.randomUUID().toString(), userId, eventId);
+        Host host = new Host(userId, eventId);
         hostRepository.save(host);
     }
 
+    // 删除用户的事件
     @Transactional
     public void removeEventFromUser(String userId, String eventId) {
         hostRepository.findByUserId(userId).stream()
                 .filter(host -> host.getEventId().equals(eventId))
                 .findFirst()
-                .ifPresent(hostRepository::delete);
+                .ifPresent(host -> hostRepository.delete(host.getUserId(), host.getEventId()));
+
     }
 }

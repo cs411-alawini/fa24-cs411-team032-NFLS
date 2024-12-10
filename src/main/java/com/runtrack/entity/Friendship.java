@@ -1,44 +1,15 @@
 package com.runtrack.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-
 import java.time.LocalDate;
 
-@Table("MakeFriends")
 public class Friendship {
-
-    @Id
-    @Column("FriendshipId")
     private String friendshipId;
-
-    @Column("UserId")
     private String userId;
-
-    @Column("FriendUserId")
     private String friendUserId;
-
-    @Column("StartDate")
     private LocalDate startDate;
-
-    @Column("FriendshipLevel")
     private String friendshipLevel;
 
-    // 构造函数
-    public Friendship() {
-    }
-
-    public Friendship(String friendshipId, String userId, String friendUserId, LocalDate startDate, String friendshipLevel) {
-        this.friendshipId = friendshipId;
-        this.userId = userId;
-        this.friendUserId = friendUserId;
-        this.startDate = startDate;
-        this.friendshipLevel = friendshipLevel;
-    }
-
-    // Getters 和 Setters
-
+    // Getters and Setters
     public String getFriendshipId() {
         return friendshipId;
     }
@@ -77,16 +48,5 @@ public class Friendship {
 
     public void setFriendshipLevel(String friendshipLevel) {
         this.friendshipLevel = friendshipLevel;
-    }
-
-    @Override
-    public String toString() {
-        return "Friendship{" +
-                "friendshipId='" + friendshipId + '\'' +
-                ", userId='" + userId + '\'' +
-                ", friendUserId='" + friendUserId + '\'' +
-                ", startDate=" + startDate +
-                ", friendshipLevel='" + friendshipLevel + '\'' +
-                '}';
     }
 }

@@ -47,6 +47,8 @@ public class EventController {
         }
     }
 
+
+
     // 根据 ID 获取事件
     @GetMapping("/{eventId}")
     public ResponseEntity<Event> getEventById(@PathVariable String eventId) {

@@ -41,7 +41,7 @@ public class FriendshipService {
     }
 
     // 创建好友关系
-    public Friendship createFriendship(String userId, String friendUserId, LocalDate startDate, String friendshipLevel) {
+    public int createFriendship(String userId, String friendUserId, LocalDate startDate, String friendshipLevel) {
         if (!userRepository.existsById(userId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
