@@ -34,8 +34,8 @@ public class UserService {
     }
 
     public Optional<User> loginUser(String email, String password) {
-        return userRepository.findById(UUID.fromString(email))
-                .filter(user -> user.getPassword().equals(password));
+        return userRepository.findByEmail(email)
+                .filter(user -> user.getPassword() != null && user.getPassword().equals(password));
     }
 
     public Optional<User> findById(UUID userId) {
@@ -53,12 +53,10 @@ public class UserService {
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // 删除用户
     public void deleteUser(UUID userId) {
         userRepository.deleteById(userId);
     }
 
-    // 获取用户参加的所有事件
     public List<Event> getUserEvents(UUID userId) {
         return hostRepository.findByUserId(userId).stream()
                 .map(host -> eventRepository.findById(host.getEventId()).orElse(null))
@@ -66,7 +64,6 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    // 给用户添加事件
     @Transactional
     public void addEventToUser(UUID userId, UUID eventId) {
         if (!userRepository.existsById(userId)) {
