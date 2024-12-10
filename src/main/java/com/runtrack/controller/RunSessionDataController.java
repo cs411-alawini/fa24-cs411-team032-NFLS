@@ -2,33 +2,54 @@ package com.runtrack.controller;
 
 import com.runtrack.entity.RunSessionData;
 import com.runtrack.service.RunSessionDataService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/runsessions")
-public class RunSessionDataController { 
+@RequestMapping("/api/run-sessions")
+public class RunSessionDataController {
 
-    private final RunSessionDataService runSessionDataService;
-
-    public RunSessionDataController(RunSessionDataService runSessionDataService) {
-        this.runSessionDataService = runSessionDataService;
-    }
+    @Autowired
+    private RunSessionDataService service;
 
     @GetMapping("/user/{userId}")
-    public List<RunSessionData> getRunSessionsByUserId(@PathVariable("userId") String userId) { // Explicit mapping for clarity
-        return runSessionDataService.getRunSessionsByUserId(userId);
+    public List<RunSessionData> getRunSessionsByUserId(@PathVariable String userId) {
+        return service.getRunSessionsByUserId(userId);
     }
 
-    @GetMapping("/stats/{userId}")
-    public Map<String, Object> getAllStats(@PathVariable("userId") String userId) { // Explicit mapping for clarity
-        return runSessionDataService.getAllStats(userId);
+    @GetMapping("/event/{eventId}")
+    public List<RunSessionData> getRunSessionsByEventId(@PathVariable String eventId) {
+        return service.getRunSessionsByEventId(eventId);
+    }
+
+
+    @GetMapping("/user/{userId}/time-range")
+    public List<RunSessionData> getRunSessionsByUserIdAndTimeRange(
+            @PathVariable String userId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+        return service.getRunSessionsByUserIdAndTimeRange(userId, start, end);
+    }
+
+    @PutMapping("/{runSessionId}/stop")
+    public ResponseEntity<String> stopRunSession(@PathVariable String runSessionId) {
+        try {
+            service.stopRunSession(runSessionId);
+            return ResponseEntity.ok("Run session stopped successfully.");
+        } catch (SQLException e) {
+            return ResponseEntity.status(500).body("Error stopping run session: " + e.getMessage());
+        }
     }
 
     @PostMapping
-    public RunSessionData saveRunSession(@RequestBody RunSessionData runSessionData) {
-        return runSessionDataService.saveRunSession(runSessionData);
+    public ResponseEntity<String> saveRunSession(@RequestBody RunSessionData runSessionData) {
+        service.saveRunSession(runSessionData);
+        return ResponseEntity.ok("Run session saved successfully.");
     }
 }

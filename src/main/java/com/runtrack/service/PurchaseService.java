@@ -30,7 +30,7 @@ public class PurchaseService {
         return purchaseRepository.findByProductId(productId);
     }
 
-    public Purchase savePurchase(Purchase purchase) {
+    public int savePurchase(Purchase purchase) {
         return purchaseRepository.save(purchase);
     }
 

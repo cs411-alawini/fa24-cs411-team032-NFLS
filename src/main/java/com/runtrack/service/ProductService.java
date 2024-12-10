@@ -23,8 +23,16 @@ public class ProductService {
     }
 
     public Product saveProduct(Product product) {
-        return productRepository.save(product);
+        int rowsAffected = productRepository.save(product);
+        if (rowsAffected > 0) {
+            // 假设 product.getProductId() 可以获取到产品的唯一 ID
+            return productRepository.findById(product.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Failed to retrieve saved product"));
+        } else {
+            throw new RuntimeException("Failed to save product");
+        }
     }
+
 
     public List<Product> findByProductName(String productName) {
         return productRepository.findByProductNameContainingIgnoreCase(productName);

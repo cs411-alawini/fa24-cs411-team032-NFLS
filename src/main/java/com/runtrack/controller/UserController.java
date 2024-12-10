@@ -7,9 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -28,24 +29,41 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestParam String email,
-                                            @RequestParam String password) {
+    public ResponseEntity<?> loginUser(@RequestParam String email,
+                                       @RequestParam String password) {
         Optional<User> user = userService.loginUser(email, password);
-        return user.map(u -> ResponseEntity.ok("Login successful"))
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"));
+
+        if (user.isPresent()) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("userId", user.get().getUserId());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid credentials"));
+        }
     }
 
+
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
+    public ResponseEntity<User> getUserById(@PathVariable String userId) {
+        System.out.println("Fetching user with ID: " + userId);
         return userService.findById(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile(@RequestParam String email) {
+        Optional<User> user = userService.findByEmail(email);
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
     @PutMapping("/{userId}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID userId,
+    public ResponseEntity<User> updateUser(@PathVariable String userId,
                                            @RequestBody User updatedUser) {
         try {
+            System.out.println("Updating user with ID: " + userId);
             User user = userService.updateUser(userId, updatedUser);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
@@ -54,20 +72,20 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID userId) {
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{userId}/events")
-    public ResponseEntity<List<Event>> getUserEvents(@PathVariable UUID userId) {
+    public ResponseEntity<List<Event>> getUserEvents(@PathVariable String userId) {
         List<Event> events = userService.getUserEvents(userId);
         return ResponseEntity.ok(events);
     }
 
     @PostMapping("/{userId}/events/{eventId}")
-    public ResponseEntity<String> addEventToUser(@PathVariable UUID userId,
-                                                 @PathVariable UUID eventId) {
+    public ResponseEntity<String> addEventToUser(@PathVariable String userId,
+                                                 @PathVariable String eventId) {
         try {
             userService.addEventToUser(userId, eventId);
             return ResponseEntity.ok("Event added to user successfully");
@@ -77,8 +95,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}/events/{eventId}")
-    public ResponseEntity<String> removeEventFromUser(@PathVariable UUID userId,
-                                                      @PathVariable UUID eventId) {
+    public ResponseEntity<String> removeEventFromUser(@PathVariable String userId,
+                                                      @PathVariable String eventId) {
         try {
             userService.removeEventFromUser(userId, eventId);
             return ResponseEntity.ok("Event removed from user successfully");

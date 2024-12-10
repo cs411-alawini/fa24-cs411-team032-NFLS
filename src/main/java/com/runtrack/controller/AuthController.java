@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,15 +22,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        String userIdStr = credentials.get("userId");
+        String userId = credentials.get("userId");
         String password = credentials.get("password");
 
-        // 检查 userId 格式是否为 UUID
-        UUID userId;
-        try {
-            userId = UUID.fromString(userIdStr);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID format");
+        if (userId == null || password == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User ID and password are required");
         }
 
         Optional<User> user = userRepository.findById(userId);
@@ -48,7 +43,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User newUser) {
         if (newUser.getUserId() == null) {
-            newUser.setUserId(UUID.randomUUID());
+            newUser.setUserId(java.util.UUID.randomUUID().toString());
         }
 
         if (userRepository.existsById(newUser.getUserId())) {

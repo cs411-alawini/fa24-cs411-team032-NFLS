@@ -15,7 +15,7 @@ public class User {
 
     @Id
     @Column("UserId")
-    private UUID userId;
+    private String userId;
 
     @Column("FirstName")
     private String firstName;

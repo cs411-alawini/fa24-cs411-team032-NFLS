@@ -7,8 +7,10 @@ import com.runtrack.repository.UserRepository;
 import com.runtrack.repository.EventRepository;
 import com.runtrack.repository.HostRepository;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,44 +30,56 @@ public class UserService {
         this.hostRepository = hostRepository;
     }
 
+    // 注册用户
     public User registerUser(User user) {
-        user.setUserId(UUID.randomUUID());
-        return userRepository.save(user);
+        user.setUserId(UUID.randomUUID().toString()); // 生成 String 类型的 UUID
+        userRepository.save(user);
+        return user;
     }
 
+    // 用户登录
     public Optional<User> loginUser(String email, String password) {
         return userRepository.findByEmail(email)
                 .filter(user -> user.getPassword() != null && user.getPassword().equals(password));
     }
 
-    public Optional<User> findById(UUID userId) {
+    // 根据 ID 查找用户
+    public Optional<User> findById(String userId) {
         return userRepository.findById(userId);
     }
 
-    public User updateUser(UUID userId, User updatedUser) {
-        return userRepository.findById(userId).map(user -> {
-            user.setFirstName(updatedUser.getFirstName());
-            user.setLastName(updatedUser.getLastName());
-            user.setEmail(updatedUser.getEmail());
-            user.setPhoneNumber(updatedUser.getPhoneNumber());
-            user.setPassword(updatedUser.getPassword());
-            return userRepository.save(user);
-        }).orElseThrow(() -> new RuntimeException("User not found"));
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    public void deleteUser(UUID userId) {
+    // 更新用户信息
+    public User updateUser(String userId, User updatedUser) {
+        updatedUser.setUserId(userId);
+        int rowsAffected = userRepository.update(updatedUser);
+
+        if (rowsAffected == 0) {
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+        return updatedUser;
+    }
+
+
+    // 删除用户
+    public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
 
-    public List<Event> getUserEvents(UUID userId) {
+    // 获取用户的所有事件
+    public List<Event> getUserEvents(String userId) {
         return hostRepository.findByUserId(userId).stream()
                 .map(host -> eventRepository.findById(host.getEventId()).orElse(null))
                 .filter(event -> event != null)
                 .collect(Collectors.toList());
     }
 
+    // 为用户添加事件
     @Transactional
-    public void addEventToUser(UUID userId, UUID eventId) {
+    public void addEventToUser(String userId, String eventId) {
         if (!userRepository.existsById(userId)) {
             throw new IllegalArgumentException("User not found");
         }
@@ -74,15 +88,17 @@ public class UserService {
             throw new IllegalArgumentException("Event not found");
         }
 
-        Host host = new Host(UUID.randomUUID(), userId, eventId);
+        Host host = new Host(userId, eventId);
         hostRepository.save(host);
     }
 
+    // 删除用户的事件
     @Transactional
-    public void removeEventFromUser(UUID userId, UUID eventId) {
+    public void removeEventFromUser(String userId, String eventId) {
         hostRepository.findByUserId(userId).stream()
                 .filter(host -> host.getEventId().equals(eventId))
                 .findFirst()
-                .ifPresent(hostRepository::delete);
+                .ifPresent(host -> hostRepository.delete(host.getUserId(), host.getEventId()));
+
     }
 }

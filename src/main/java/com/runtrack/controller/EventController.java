@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/events")
@@ -48,47 +47,47 @@ public class EventController {
         }
     }
 
+
+
     // 根据 ID 获取事件
     @GetMapping("/{eventId}")
-    public ResponseEntity<Event> getEventById(@PathVariable UUID eventId) {
+    public ResponseEntity<Event> getEventById(@PathVariable String eventId) {
         return ResponseEntity.ok(eventService.getEventById(eventId));
     }
 
     // 根据日期获取事件
-    @GetMapping("/date")
-    public ResponseEntity<List<Event>> getEventsByDate(@RequestParam String date) {
-        try {
-            LocalDate localDate = LocalDate.parse(date);
-            return ResponseEntity.ok(eventService.getEventsByDate(localDate));
-        } catch (DateTimeParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format. Expected format: YYYY-MM-DD");
-        }
-    }
-
+//    @GetMapping("/date")
+//    public ResponseEntity<List<Event>> getEventsByDate(@RequestParam String date) {
+//        try {
+//            LocalDate localDate = LocalDate.parse(date);
+//            return ResponseEntity.ok(eventService.getEventsByDate(localDate));
+//        } catch (DateTimeParseException e) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format. Expected format: YYYY-MM-DD");
+//        }
+//    }
+//
     @GetMapping("/city")
     public ResponseEntity<List<Event>> getEventsByCity(@RequestParam String city) {
         return ResponseEntity.ok(eventService.getEventsByCity(city));
     }
 
-
     // 删除事件
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable UUID eventId) {
+    public ResponseEntity<Void> deleteEvent(@PathVariable String eventId) {
         eventService.deleteEventById(eventId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{eventId}/users")
-    public ResponseEntity<List<User>> getEventUsers(@PathVariable UUID eventId) {
+    public ResponseEntity<List<User>> getEventUsers(@PathVariable String eventId) {
         return ResponseEntity.ok(eventService.getEventUsers(eventId));
     }
-
 
     // 内部类用于接收创建事件的请求体
     public static class EventRequest {
         private String city;
         private String date;
-        private UUID userId;
+        private String userId; // 修改为 String
 
         // Getters and Setters
         public String getCity() {
@@ -107,11 +106,11 @@ public class EventController {
             this.date = date;
         }
 
-        public UUID getUserId() {
+        public String getUserId() {
             return userId;
         }
 
-        public void setUserId(UUID userId) {
+        public void setUserId(String userId) {
             this.userId = userId;
         }
 
@@ -120,7 +119,7 @@ public class EventController {
             return "EventRequest{" +
                     "city='" + city + '\'' +
                     ", date='" + date + '\'' +
-                    ", userId=" + userId +
+                    ", userId='" + userId + '\'' +
                     '}';
         }
     }

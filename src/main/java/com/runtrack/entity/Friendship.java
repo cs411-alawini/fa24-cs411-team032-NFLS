@@ -1,66 +1,36 @@
 package com.runtrack.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-
 import java.time.LocalDate;
-import java.util.UUID;
 
-@Table("MakeFriends")
 public class Friendship {
-
-    @Id
-    @Column("FriendshipId")
-    private UUID friendshipId;
-
-    @Column("UserId")
-    private UUID userId;
-
-    @Column("FriendUserId")
-    private UUID friendUserId;
-
-    @Column("StartDate")
+    private String friendshipId;
+    private String userId;
+    private String friendUserId;
     private LocalDate startDate;
-
-    @Column("FriendshipLevel")
     private String friendshipLevel;
 
-    // 构造函数
-    public Friendship() {
-    }
-
-    public Friendship(UUID friendshipId, UUID userId, UUID friendUserId, LocalDate startDate, String friendshipLevel) {
-        this.friendshipId = friendshipId;
-        this.userId = userId;
-        this.friendUserId = friendUserId;
-        this.startDate = startDate;
-        this.friendshipLevel = friendshipLevel;
-    }
-
-    // Getters 和 Setters
-
-    public UUID getFriendshipId() {
+    // Getters and Setters
+    public String getFriendshipId() {
         return friendshipId;
     }
 
-    public void setFriendshipId(UUID friendshipId) {
+    public void setFriendshipId(String friendshipId) {
         this.friendshipId = friendshipId;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public UUID getFriendUserId() {
+    public String getFriendUserId() {
         return friendUserId;
     }
 
-    public void setFriendUserId(UUID friendUserId) {
+    public void setFriendUserId(String friendUserId) {
         this.friendUserId = friendUserId;
     }
 
@@ -78,16 +48,5 @@ public class Friendship {
 
     public void setFriendshipLevel(String friendshipLevel) {
         this.friendshipLevel = friendshipLevel;
-    }
-
-    @Override
-    public String toString() {
-        return "Friendship{" +
-                "friendshipId=" + friendshipId +
-                ", userId=" + userId +
-                ", friendUserId=" + friendUserId +
-                ", startDate=" + startDate +
-                ", friendshipLevel='" + friendshipLevel + '\'' +
-                '}';
     }
 }
