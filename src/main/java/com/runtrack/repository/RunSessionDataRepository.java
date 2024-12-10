@@ -47,6 +47,16 @@ public class RunSessionDataRepository {
         return jdbcTemplate.query(sql, new RunSessionDataRowMapper(), eventId);
     }
 
+    public Float getTotalDistanceByUserId(String userId) {
+        String sql = "SELECT SUM(SessionDistance) FROM RunSessionData WHERE UserId = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{userId}, Float.class);
+    }
+
+    public Float getTotalTimeByUserId(String userId) {
+        String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE, StartTime, EndTime)) FROM RunSessionData WHERE UserId = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{userId}, Float.class);
+    }
+
     public List<RunSessionData> findByUserIdAndStartTimeBetween(String userId, LocalDateTime start, LocalDateTime end) {
         String sql = "SELECT * FROM RunSessionData WHERE UserId = ? AND StartTime BETWEEN ? AND ?";
         return jdbcTemplate.query(sql, new RunSessionDataRowMapper(), userId, Timestamp.valueOf(start), Timestamp.valueOf(end));
