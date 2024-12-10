@@ -11,7 +11,7 @@ public class RunTrackService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public Map<String, Object> getTopRunnersAndProducts(String userId, Date startDate, Date endDate) throws SQLException {
+    public Map<String, Object> getTopRunnersAndProducts(String userId, java.util.Date startDate, java.util.Date endDate) throws SQLException {
         // Define the stored procedure call
         String procedureCall = "{CALL GetTopRunnersAndProducts(?, ?, ?)}";
 

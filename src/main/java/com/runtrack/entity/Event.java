@@ -23,4 +23,14 @@ public class Event {
 
     @Column("Date")
     private LocalDate date;
+
+    // New fields
+    @Column("Name")
+    private String name;
+
+    @Column("Location")
+    private String location;
+
+    // Constructors, getters, and setters will be handled by Lombok's @Data
 }
+

@@ -85,10 +85,12 @@ public class EventService {
         return eventRepository.findByDate(date);
     }
 
-    // 根据城市获取事件
+
     public List<Event> getEventsByCity(String city) {
-        return eventRepository.findByCity(city);
+        return eventRepository.findByLocationIgnoreCase(city);
     }
+
+
 
     // 删除事件
     public void deleteEventById(UUID eventId) {
