@@ -16,3 +16,4 @@ public interface UserRepository extends CrudRepository<User, UUID> {
     Optional<User> findByEmail(@Param("email") String email);
 
 }
+

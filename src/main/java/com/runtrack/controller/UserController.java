@@ -7,9 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,18 +20,28 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         User registeredUser = userService.registerUser(user);
-        return ResponseEntity.ok(registeredUser);
+        return ResponseEntity.ok(
+                Map.of("message", "Register successful",
+                        "userId", registeredUser.getUserId().toString(),
+                        "email", registeredUser.getEmail())
+        );
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestParam String email,
-                                            @RequestParam String password) {
+    public ResponseEntity<Map<String, String>> loginUser(@RequestParam String email,
+                                                         @RequestParam String password) {
         Optional<User> user = userService.loginUser(email, password);
-        return user.map(u -> ResponseEntity.ok("Login successful"))
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"));
+        return user.map(u -> ResponseEntity.ok(Map.of(
+                "message", "Login successful",
+                "email", u.getEmail()
+        ))).orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "message", "Invalid credentials"
+        )));
     }
+
+
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
@@ -65,25 +73,11 @@ public class UserController {
         return ResponseEntity.ok(events);
     }
 
-    @PostMapping("/{userId}/events/{eventId}")
-    public ResponseEntity<String> addEventToUser(@PathVariable UUID userId,
-                                                 @PathVariable UUID eventId) {
-        try {
-            userService.addEventToUser(userId, eventId);
-            return ResponseEntity.ok("Event added to user successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile(@RequestParam String email) {
+        return userService.findByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{userId}/events/{eventId}")
-    public ResponseEntity<String> removeEventFromUser(@PathVariable UUID userId,
-                                                      @PathVariable UUID eventId) {
-        try {
-            userService.removeEventFromUser(userId, eventId);
-            return ResponseEntity.ok("Event removed from user successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 }

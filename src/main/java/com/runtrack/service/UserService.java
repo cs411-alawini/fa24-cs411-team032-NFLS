@@ -85,4 +85,9 @@ public class UserService {
                 .findFirst()
                 .ifPresent(hostRepository::delete);
     }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 }
