@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface HostRepository extends CrudRepository<Host, UUID> {
+public interface HostRepository extends CrudRepository<Host, String> {
 
     @Query("SELECT * FROM Host WHERE UserId = :userId")
-    List<Host> findByUserId(UUID userId);
+    List<Host> findByUserId(String userId);
 
     @Query("SELECT * FROM Host WHERE EventId = :eventId")
-    List<Host> findByEventId(UUID eventId);
+    List<Host> findByEventId(String eventId);
 }

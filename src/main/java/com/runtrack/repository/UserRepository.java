@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, UUID> {
+public interface UserRepository extends CrudRepository<User, String> {
 
     @Query("SELECT * FROM User WHERE email = :email")
     Optional<User> findByEmail(@Param("email") String email);

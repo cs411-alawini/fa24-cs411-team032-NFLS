@@ -5,20 +5,19 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Table("MakeFriends")
 public class Friendship {
 
     @Id
     @Column("FriendshipId")
-    private UUID friendshipId;
+    private String friendshipId;
 
     @Column("UserId")
-    private UUID userId;
+    private String userId;
 
     @Column("FriendUserId")
-    private UUID friendUserId;
+    private String friendUserId;
 
     @Column("StartDate")
     private LocalDate startDate;
@@ -30,7 +29,7 @@ public class Friendship {
     public Friendship() {
     }
 
-    public Friendship(UUID friendshipId, UUID userId, UUID friendUserId, LocalDate startDate, String friendshipLevel) {
+    public Friendship(String friendshipId, String userId, String friendUserId, LocalDate startDate, String friendshipLevel) {
         this.friendshipId = friendshipId;
         this.userId = userId;
         this.friendUserId = friendUserId;
@@ -40,27 +39,27 @@ public class Friendship {
 
     // Getters 和 Setters
 
-    public UUID getFriendshipId() {
+    public String getFriendshipId() {
         return friendshipId;
     }
 
-    public void setFriendshipId(UUID friendshipId) {
+    public void setFriendshipId(String friendshipId) {
         this.friendshipId = friendshipId;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public UUID getFriendUserId() {
+    public String getFriendUserId() {
         return friendUserId;
     }
 
-    public void setFriendUserId(UUID friendUserId) {
+    public void setFriendUserId(String friendUserId) {
         this.friendUserId = friendUserId;
     }
 
@@ -83,9 +82,9 @@ public class Friendship {
     @Override
     public String toString() {
         return "Friendship{" +
-                "friendshipId=" + friendshipId +
-                ", userId=" + userId +
-                ", friendUserId=" + friendUserId +
+                "friendshipId='" + friendshipId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", friendUserId='" + friendUserId + '\'' +
                 ", startDate=" + startDate +
                 ", friendshipLevel='" + friendshipLevel + '\'' +
                 '}';

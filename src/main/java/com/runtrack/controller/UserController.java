@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -36,14 +35,14 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
+    public ResponseEntity<User> getUserById(@PathVariable String userId) {
         return userService.findById(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID userId,
+    public ResponseEntity<User> updateUser(@PathVariable String userId,
                                            @RequestBody User updatedUser) {
         try {
             User user = userService.updateUser(userId, updatedUser);
@@ -54,20 +53,20 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID userId) {
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{userId}/events")
-    public ResponseEntity<List<Event>> getUserEvents(@PathVariable UUID userId) {
+    public ResponseEntity<List<Event>> getUserEvents(@PathVariable String userId) {
         List<Event> events = userService.getUserEvents(userId);
         return ResponseEntity.ok(events);
     }
 
     @PostMapping("/{userId}/events/{eventId}")
-    public ResponseEntity<String> addEventToUser(@PathVariable UUID userId,
-                                                 @PathVariable UUID eventId) {
+    public ResponseEntity<String> addEventToUser(@PathVariable String userId,
+                                                 @PathVariable String eventId) {
         try {
             userService.addEventToUser(userId, eventId);
             return ResponseEntity.ok("Event added to user successfully");
@@ -77,8 +76,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}/events/{eventId}")
-    public ResponseEntity<String> removeEventFromUser(@PathVariable UUID userId,
-                                                      @PathVariable UUID eventId) {
+    public ResponseEntity<String> removeEventFromUser(@PathVariable String userId,
+                                                      @PathVariable String eventId) {
         try {
             userService.removeEventFromUser(userId, eventId);
             return ResponseEntity.ok("Event removed from user successfully");

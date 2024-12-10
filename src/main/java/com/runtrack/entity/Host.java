@@ -14,15 +14,15 @@ import java.util.UUID;
 public class Host {
 
     @Id
-    private UUID id;
+    private String id;
 
     @Column("UserId")
-    private UUID userId;
+    private String userId;
 
     @Column("EventId")
-    private UUID eventId;
+    private String eventId;
 
-    public Host(UUID id, UUID userId, UUID eventId) {
+    public Host(String id, String userId, String eventId) {
         this.id = id;
         this.userId = userId;
         this.eventId = eventId;

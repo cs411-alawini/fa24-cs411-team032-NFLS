@@ -16,17 +16,13 @@ public class Event {
 
     @Id
     @Column("EventId")
-    private UUID eventId;
+    private String eventId;
 
     @Column("City")
     private String city;
 
     @Column("Date")
     private LocalDate date;
-
-    // New fields
-    @Column("Name")
-    private String name;
 
     @Column("Location")
     private String location;

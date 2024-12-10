@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface EventRepository extends CrudRepository<Event, UUID> {
+public interface EventRepository extends CrudRepository<Event, String> {
 
     // Case-insensitive search for events by location
     @Query("SELECT * FROM Event WHERE LOWER(Location) = LOWER(:location)")

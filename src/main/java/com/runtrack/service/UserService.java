@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public User registerUser(User user) {
-        user.setUserId(UUID.randomUUID());
+        user.setUserId(UUID.randomUUID().toString()); // 生成 String 类型的 UUID
         return userRepository.save(user);
     }
 
@@ -38,11 +38,11 @@ public class UserService {
                 .filter(user -> user.getPassword() != null && user.getPassword().equals(password));
     }
 
-    public Optional<User> findById(UUID userId) {
+    public Optional<User> findById(String userId) {
         return userRepository.findById(userId);
     }
 
-    public User updateUser(UUID userId, User updatedUser) {
+    public User updateUser(String userId, User updatedUser) {
         return userRepository.findById(userId).map(user -> {
             user.setFirstName(updatedUser.getFirstName());
             user.setLastName(updatedUser.getLastName());
@@ -53,11 +53,11 @@ public class UserService {
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public void deleteUser(UUID userId) {
+    public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
 
-    public List<Event> getUserEvents(UUID userId) {
+    public List<Event> getUserEvents(String userId) {
         return hostRepository.findByUserId(userId).stream()
                 .map(host -> eventRepository.findById(host.getEventId()).orElse(null))
                 .filter(event -> event != null)
@@ -65,7 +65,7 @@ public class UserService {
     }
 
     @Transactional
-    public void addEventToUser(UUID userId, UUID eventId) {
+    public void addEventToUser(String userId, String eventId) {
         if (!userRepository.existsById(userId)) {
             throw new IllegalArgumentException("User not found");
         }
@@ -74,12 +74,12 @@ public class UserService {
             throw new IllegalArgumentException("Event not found");
         }
 
-        Host host = new Host(UUID.randomUUID(), userId, eventId);
+        Host host = new Host(UUID.randomUUID().toString(), userId, eventId);
         hostRepository.save(host);
     }
 
     @Transactional
-    public void removeEventFromUser(UUID userId, UUID eventId) {
+    public void removeEventFromUser(String userId, String eventId) {
         hostRepository.findByUserId(userId).stream()
                 .filter(host -> host.getEventId().equals(eventId))
                 .findFirst()
