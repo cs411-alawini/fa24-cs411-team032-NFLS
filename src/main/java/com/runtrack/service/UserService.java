@@ -101,4 +101,9 @@ public class UserService {
                 .ifPresent(host -> hostRepository.delete(host.getUserId(), host.getEventId()));
 
     }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 }
