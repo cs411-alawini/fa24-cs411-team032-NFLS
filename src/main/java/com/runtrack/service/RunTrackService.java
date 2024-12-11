@@ -1,3 +1,4 @@
+package com.runtrack.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.*;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ public class RunTrackService {
 
     public Map<String, Object> getTopRunnersAndProducts(String userId, java.util.Date startDate, java.util.Date endDate) throws SQLException {
         // Define the stored procedure call
-        String procedureCall = "{CALL GetTopRunnersAndProducts(?, ?, ?)}";
+        String procedureCall = "{CALL sp_getTopRunnersAndProducts(?, ?, ?)}";
 
         // Prepare input parameters
         Object[] params = new Object[] { userId, new java.sql.Date(startDate.getTime()), new java.sql.Date(endDate.getTime()) };
@@ -40,7 +41,7 @@ public class RunTrackService {
                 while (rs.next()) {
                     Map<String, Object> runner = new HashMap<>();
                     runner.put("UserId", rs.getString("UserId"));
-                    runner.put("FullName", rs.getString("FullName"));
+                    runner.put("UserName", rs.getString("UserName"));
                     runner.put("TotalDistance", rs.getDouble("TotalDistance"));
                     topRunners.add(runner);
                 }
@@ -48,20 +49,20 @@ public class RunTrackService {
                 rs.close();
             }
 
-            // Check if there is a second ResultSet (User's total distance)
-            if (callableStatement.getMoreResults()) {
-                List<Map<String, Object>> userDistance = new ArrayList<>();
-                ResultSet rs = callableStatement.getResultSet();
-                while (rs.next()) {
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("UserId", rs.getString("UserId"));
-                    user.put("FullName", rs.getString("FullName"));
-                    user.put("TotalDistance", rs.getDouble("TotalDistance"));
-                    userDistance.add(user);
-                }
-                resultMap.put("UserDistance", userDistance);
-                rs.close();
-            }
+            // // Check if there is a second ResultSet (User's total distance)
+            // if (callableStatement.getMoreResults()) {
+            //     List<Map<String, Object>> userDistance = new ArrayList<>();
+            //     ResultSet rs = callableStatement.getResultSet();
+            //     while (rs.next()) {
+            //         Map<String, Object> user = new HashMap<>();
+            //         user.put("UserId", rs.getString("UserId"));
+            //         user.put("UserName", rs.getString("UserName"));
+            //         user.put("TotalDistance", rs.getDouble("TotalDistance"));
+            //         userDistance.add(user);
+            //     }
+            //     resultMap.put("UserDistance", userDistance);
+            //     rs.close();
+            // }
 
             // Check if there is a third ResultSet (Recent Purchases)
             if (callableStatement.getMoreResults()) {
@@ -72,7 +73,7 @@ public class RunTrackService {
                     purchase.put("ProductId", rs.getString("ProductId"));
                     purchase.put("ProductName", rs.getString("ProductName"));
                     purchase.put("ProductPrice", rs.getBigDecimal("ProductPrice"));
-                    purchase.put("UserId", rs.getString("UserId"));
+                    // purchase.put("UserId", rs.getString("UserId"));
                     recentPurchases.add(purchase);
                 }
                 resultMap.put("RecentPurchases", recentPurchases);
