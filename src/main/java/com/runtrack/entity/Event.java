@@ -1,40 +1,32 @@
 package com.runtrack.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.UUID;
 
-@Entity
-@Table(name = "Event")
 @Data
-@EqualsAndHashCode(exclude = "hosts")
+@NoArgsConstructor
+@Table("Event")
 public class Event {
+
     @Id
-    @Column(name = "EventID", nullable = false, unique = true)
+    @Column("EventId")
     private String eventId;
 
-    @Column(name = "City", nullable = false)
+    @Column("City")
     private String city;
 
-    @Column(name = "Date", nullable = false)
+    @Column("Date")
     private LocalDate date;
 
-    @ManyToMany(mappedBy = "hostedEvents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference // Break cyclic reference here
-    private Set<User> hosts = new HashSet<>();
+    @Column("Location")
+    private String location;
 
-    public void addHost(User user) {
-        this.hosts.add(user);
-        user.getHostedEvents().add(this);
-    }
-
-    public void removeHost(User user) {
-        this.hosts.remove(user);
-        user.getHostedEvents().remove(this);
-    }
+    // Constructors, getters, and setters will be handled by Lombok's @Data
 }
+

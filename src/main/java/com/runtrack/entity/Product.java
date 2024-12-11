@@ -1,22 +1,22 @@
 package com.runtrack.entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.HashSet;
-import java.util.Set;
-
-@Entity
-@Table(name = "Product")
 @Data
+@Table("Product")
 public class Product {
+
     @Id
+    @Column("ProductId")
     private String productId;
 
-    @Column(name = "ProductName")
+    @Column("ProductName")
     private String productName;
 
-    @Column(name = "ProductPrice")
+    @Column("ProductPrice")
     private double productPrice;
 
 }

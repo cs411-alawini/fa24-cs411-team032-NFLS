@@ -16,6 +16,7 @@ public class FriendshipController {
     public FriendshipController(FriendshipService friendshipService) {
         this.friendshipService = friendshipService;
     }
+
     @GetMapping("/{userId}/friendship")
     public List<Friendship> getAllFriendships(@PathVariable String userId) {
         return friendshipService.getAllFriendships(userId);
@@ -23,16 +24,15 @@ public class FriendshipController {
 
     @GetMapping("/{userId}/friends")
     public List<User> getAllFriends(@PathVariable String userId) {
-        // 调用 Service 层获取好友列表
         return friendshipService.getAllFriends(userId);
     }
 
-    @PostMapping
-    public Friendship createFriendship(
-            @RequestParam String userId,
-            @RequestParam String friendUserId,
-            @RequestParam LocalDate startDate,
-            @RequestParam String friendshipLevel) {
-        return friendshipService.createFriendship(userId, friendUserId, startDate, friendshipLevel);
-    }
+//    @PostMapping
+//    public Friendship createFriendship(
+//            @RequestParam String userId,
+//            @RequestParam String friendUserId,
+//            @RequestParam LocalDate startDate,
+//            @RequestParam String friendshipLevel) {
+//        return friendshipService.createFriendship(userId, friendUserId, startDate, friendshipLevel);
+//    }
 }

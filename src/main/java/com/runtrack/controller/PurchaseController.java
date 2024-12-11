@@ -31,10 +31,10 @@ public class PurchaseController {
         return purchaseService.getPurchasesByProductId(productId);
     }
 
-    @PostMapping
-    public Purchase createPurchase(@RequestBody Purchase purchase) {
-        return purchaseService.savePurchase(purchase);
-    }
+//    @PostMapping
+//    public Purchase createPurchase(@RequestBody Purchase purchase) {
+//        return purchaseService.savePurchase(purchase);
+//    }
 
     @DeleteMapping("/{purchaseId}")
     public void deletePurchase(@PathVariable String purchaseId) {

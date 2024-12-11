@@ -3,9 +3,15 @@ package com.runtrack.controller;
 import com.runtrack.entity.Event;
 import com.runtrack.entity.User;
 import com.runtrack.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Set;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -17,55 +23,85 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<User> registerUser(@RequestBody User user) {
         User registeredUser = userService.registerUser(user);
         return ResponseEntity.ok(registeredUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam String firstName,
-                                       @RequestParam String lastName,
+    public ResponseEntity<?> loginUser(@RequestParam String email,
                                        @RequestParam String password) {
-        return userService.loginUser(firstName, lastName, password)
-                .map(user -> ResponseEntity.ok("Login successful"))
-                .orElse(ResponseEntity.status(401).body("Invalid credentials"));
+        Optional<User> user = userService.loginUser(email, password);
+
+        if (user.isPresent()) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("userId", user.get().getUserId());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid credentials"));
+        }
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.findById(id)
+
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable String userId) {
+        System.out.println("Fetching user with ID: " + userId);
+        return userService.findById(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(
-            @PathVariable Long id,
-            @RequestBody User updatedUser) {
-        return userService.findById(id)
-                .map(user -> {
-                    user.setFirstName(updatedUser.getFirstName());
-                    user.setLastName(updatedUser.getLastName());
-                    user.setEmail(updatedUser.getEmail());
-                    user.setPhoneNumber(updatedUser.getPhoneNumber());
-                    user.setPassword(updatedUser.getPassword());
-                    userService.save(user);
-                    return ResponseEntity.ok(user);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile(@RequestParam String email) {
+        Optional<User> user = userService.findByEmail(email);
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable String userId,
+                                           @RequestBody User updatedUser) {
+        try {
+            System.out.println("Updating user with ID: " + userId);
+            User user = userService.updateUser(userId, updatedUser);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{userId}/events")
-    public Set<Event> getUserEvents(@PathVariable String userId) {
-        return userService.getUserEvents(userId); // 查询用户参加的事件
+    public ResponseEntity<List<Event>> getUserEvents(@PathVariable String userId) {
+        List<Event> events = userService.getUserEvents(userId);
+        return ResponseEntity.ok(events);
     }
 
     @PostMapping("/{userId}/events/{eventId}")
-    public User addEventToUser(@PathVariable String userId, @PathVariable String eventId) {
-        return userService.addEventToUser(userId, eventId);
+    public ResponseEntity<String> addEventToUser(@PathVariable String userId,
+                                                 @PathVariable String eventId) {
+        try {
+            userService.addEventToUser(userId, eventId);
+            return ResponseEntity.ok("Event added to user successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{userId}/events/{eventId}")
-    public User removeEventFromUser(@PathVariable String userId, @PathVariable String eventId) {
-        return userService.removeEventFromUser(userId, eventId);
+    public ResponseEntity<String> removeEventFromUser(@PathVariable String userId,
+                                                      @PathVariable String eventId) {
+        try {
+            userService.removeEventFromUser(userId, eventId);
+            return ResponseEntity.ok("Event removed from user successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

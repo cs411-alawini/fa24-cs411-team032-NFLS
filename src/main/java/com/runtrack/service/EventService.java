@@ -1,9 +1,12 @@
 package com.runtrack.service;
 
 import com.runtrack.entity.Event;
+import com.runtrack.entity.Host;
 import com.runtrack.entity.User;
 import com.runtrack.repository.EventRepository;
+import com.runtrack.repository.HostRepository;
 import com.runtrack.repository.UserRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,17 +14,20 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
+
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final HostRepository hostRepository;
 
-    public EventService(EventRepository eventRepository, UserRepository userRepository) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository, HostRepository hostRepository) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.hostRepository = hostRepository;
     }
 
     public Event createEvent(String city, String date, String userId) {
@@ -36,15 +42,16 @@ public class EventService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format. Expected format: YYYY-MM-DD");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        eventRepository.save(event);
 
-        event.addHost(user);
-        return eventRepository.save(event);
+        Host host = new Host(userId, eventId);
+        hostRepository.save(host);
+
+        return event;
     }
 
     public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+        return (List<Event>) eventRepository.findAll();
     }
 
     public Event getEventById(String eventId) {
@@ -52,21 +59,31 @@ public class EventService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
     }
 
-    public List<Event> getEventsByDate(LocalDate date) {
-        return eventRepository.findByDate(date);
-    }
-
     public List<Event> getEventsByCity(String city) {
         return eventRepository.findByCity(city);
     }
 
+
     public void deleteEventById(String eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
+        }
+
+        List<Host> hosts = hostRepository.findByEventId(eventId);
+        hostRepository.deleteAll(hosts);
         eventRepository.deleteById(eventId);
     }
 
-    public Set<User> getEventUsers(String eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
-        return event.getHosts();
+    public List<User> getEventUsers(String eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
+        }
+
+        List<Host> hosts = hostRepository.findByEventId(eventId);
+
+        return hosts.stream()
+                .map(host -> userRepository.findById(host.getUserId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")))
+                .collect(Collectors.toList());
     }
 }
